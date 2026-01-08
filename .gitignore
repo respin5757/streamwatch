@@ -205,3 +205,15 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+.env
+**/*.json
+!**/feature_columns.json
+!**/tfidf_vocab.json
+airflow/logs/
+airflow/config/
+__pycache__/
+.venv/
+.streamlit_cache/
+*.parquet
+
