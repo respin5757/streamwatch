@@ -16,37 +16,50 @@ PathLike = Union[str, Path]
 def _get_client(project: str | None = None) -> storage.Client:
     """
     Auth priority:
-      1) STREAMWATCH_GCP_SA_JSON (Streamlit secrets or env var)
-         - can be a dict (TOML object) or a JSON string
-      2) Application Default Credentials
+      1) Streamlit secrets: st.secrets["STREAMWATCH_GCP_SA_JSON"]  (recommended on Streamlit Cloud)
+      2) Env var: STREAMWATCH_GCP_SA_JSON (JSON string)
+      3) ADC (local dev only) — but we fail fast on Streamlit Cloud to avoid metadata TransportError
     """
-    sa_json: object | None = os.getenv("STREAMWATCH_GCP_SA_JSON")
+    info = None
 
-    # Prefer Streamlit secrets when available (Streamlit Cloud)
+    # 1) Streamlit secrets
     try:
         import streamlit as st
+
         if "STREAMWATCH_GCP_SA_JSON" in st.secrets:
-            sa_json = st.secrets["STREAMWATCH_GCP_SA_JSON"]
+            sa_obj = st.secrets["STREAMWATCH_GCP_SA_JSON"]
+
+            # st.secrets nested tables aren't always plain dicts — force to dict
+            info = dict(sa_obj)
+
     except Exception:
         pass
 
-    if sa_json:
-        # If stored as TOML object, it'll already be a dict
-        if isinstance(sa_json, dict):
-            info = sa_json
-        else:
-            # Otherwise treat as string JSON
+    # 2) Env var (JSON string)
+    if info is None:
+        sa_json = os.getenv("STREAMWATCH_GCP_SA_JSON")
+        if sa_json and str(sa_json).strip():
             s = str(sa_json).strip()
 
-            # Common mistake: wrapping the entire JSON in extra quotes
+            # If the JSON got wrapped in extra quotes, strip them
             if (s.startswith("'") and s.endswith("'")) or (s.startswith('"') and s.endswith('"')):
                 s = s[1:-1].strip()
 
             info = json.loads(s)
 
+    # If we have SA info, use it
+    if info is not None:
         creds = service_account.Credentials.from_service_account_info(info)
         return storage.Client(project=project or info.get("project_id"), credentials=creds)
 
+    # 3) If running on Streamlit Cloud and we got here, ADC will crash -> raise a helpful error
+    if os.getenv("STREAMLIT_CLOUD") == "true" or os.getenv("STREAMLIT_SERVER_HEADLESS") == "true":
+        raise RuntimeError(
+            "No service account credentials found. Set STREAMWATCH_GCP_SA_JSON in Streamlit Secrets "
+            "as a TOML object/table (not a quoted JSON string)."
+        )
+
+    # local fallback
     return storage.Client(project=project) if project else storage.Client()
 
 
