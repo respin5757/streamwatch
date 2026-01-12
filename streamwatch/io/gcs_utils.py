@@ -16,15 +16,39 @@ PathLike = Union[str, Path]
 def _get_client(project: str | None = None) -> storage.Client:
     """
     Auth priority:
-      1) STREAMWATCH_GCP_SA_JSON env var (service account JSON string)
-      2) Application Default Credentials (GOOGLE_APPLICATION_CREDENTIALS, gcloud auth, or Composer identity)
+      1) STREAMWATCH_GCP_SA_JSON (Streamlit secrets or env var)
+         - can be a dict (TOML object) or a JSON string
+      2) Application Default Credentials
     """
-    sa_json = os.getenv("STREAMWATCH_GCP_SA_JSON")
+    sa_json: object | None = os.getenv("STREAMWATCH_GCP_SA_JSON")
+
+    # Prefer Streamlit secrets when available (Streamlit Cloud)
+    try:
+        import streamlit as st
+        if "STREAMWATCH_GCP_SA_JSON" in st.secrets:
+            sa_json = st.secrets["STREAMWATCH_GCP_SA_JSON"]
+    except Exception:
+        pass
+
     if sa_json:
-        info = json.loads(sa_json)
+        # If stored as TOML object, it'll already be a dict
+        if isinstance(sa_json, dict):
+            info = sa_json
+        else:
+            # Otherwise treat as string JSON
+            s = str(sa_json).strip()
+
+            # Common mistake: wrapping the entire JSON in extra quotes
+            if (s.startswith("'") and s.endswith("'")) or (s.startswith('"') and s.endswith('"')):
+                s = s[1:-1].strip()
+
+            info = json.loads(s)
+
         creds = service_account.Credentials.from_service_account_info(info)
         return storage.Client(project=project or info.get("project_id"), credentials=creds)
+
     return storage.Client(project=project) if project else storage.Client()
+
 
 
 def _norm_prefix(prefix: str) -> str:
