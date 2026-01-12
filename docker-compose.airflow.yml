@@ -1,0 +1,84 @@
+version: "3.8"
+
+x-airflow-common: &airflow-common
+  build: .
+
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
+
+    # Make your project importable
+    PYTHONPATH: /opt/airflow/project
+
+    # ---- StreamWatch env vars ----
+    STREAMWATCH_GCS_BUCKET: streamwatch-artifacts-rafa
+    STREAMWATCH_GCS_PREFIX: streamwatch
+    STREAMWATCH_GCP_PROJECT: streamwatch-481219
+    TMDB_V4_TOKEN: ${TMDB_V4_TOKEN}
+
+    # Trends controls
+    STREAMWATCH_TRENDS_MAX_SHOWS: "200"
+    STREAMWATCH_TRENDS_MAX_SECONDS: "1200"
+    STREAMWATCH_TRENDS_BASE_SLEEP: "2.0"
+
+    # GCP auth inside container
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/keys/streamwatch-sa.json
+
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/plugins:/opt/airflow/plugins
+
+    # Mount your project repo
+    - ./:/opt/airflow/project
+
+    # Mount service account key (DO NOT COMMIT THIS FILE)
+    - ./streamwatch/io/streamwatch-sa.json:/opt/airflow/keys/streamwatch-sa.json:ro
+
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    - postgres
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - airflow_postgres:/var/lib/postgresql/data
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate &&
+        airflow users create \
+          --username admin \
+          --password admin \
+          --firstname admin \
+          --lastname admin \
+          --role Admin \
+          --email admin@example.com
+    restart: "no"
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "8080:8080"
+    restart: always
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: always
+
+volumes:
+  airflow_postgres:

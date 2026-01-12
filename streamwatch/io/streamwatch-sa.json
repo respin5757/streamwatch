@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "streamwatch-481219",
+  "private_key_id": "637d6286a5e8bef5a36ded66019fbc909d23b4b9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC9JkF49lGddejL\nNLTUPhM5a/q4WtxgFWUwln9Rv0KVZKeE8z506TqtBKflBws/GORIBp6p4kxaFf5l\ntU3IXoKZic928TiJoc2fjMwL5Y7lDzniyxYJrzrSTMVbAWK62IYxNFQw34maarp4\ncy+gG30rr0sOV8uPqao8WOfrLv4j0Vicg8bObAzqxIjhobtSuVWkWcPjSiAxIRXD\nDgpcbjXgI8OPMhYT+o5bdhO+F4+3Lzh2VnFY8pMgIy8t548xJ6ZRp1QHNf54eyjs\nVv+w6DUl0Ut5ZNJC4+soKrGQ4fPN3rbIEC5WMDG1Xg15duu60Yw/mNbnd5EYW5Vs\ngsSwk3XNAgMBAAECggEADAXqsxhGxDe8R9ZrPCaDk4Q6mEDzF/E90MkJzmKi7Kez\nDxXLI/FQHbLzEFefR/zg3d2V2xfOx9coDl0Bu1MBzpkRvlTDX3REHSuWkmPRu0IT\nHHueRGVTQg56z2sW7huMHbde0D1Ignx2qxtfRp6yTFzEuTFGRJtOfkfq2tDOex/c\nG0G+Po0Qyl/5IYsHb6M+vnm/wojLYO/yjg/M38WZhCKepHFoTVLXSrCc2VMvypGB\nza9CbEnXeFv1tNtEuw+HU+B1U2RlwOQGwDGg0VwpvkWfp2cWrK9gxOpE3CXY7r0a\nBNozG+6F2r9wZmtkkXdkFq6gcdjl8XwqypqBhpkh/QKBgQDihmldrZ31ku9AyYoC\ni71al1ktTHBflbLRu6Q9R11we/1PVV2g2ZGlF+ThT+CFkNeoGhB+i6IwV7V9ZG9D\ncckb+8KPCSinPg98ipnblrrZIDP/LxwN68NIIcoUfDqmKFAAxzOwh3MNSAXiy+vP\n3jrd3oJ02zFB2TnivEZBVvhELwKBgQDVwtsui6ooPXjcxzLcUUXMguZezBu+5yhK\nOQuZEgNOt7SSMt7Sfj6xMtuevR5BNteb0NU/7a7wje+W3qLCsyxlR3cjOJJ5sqLB\n0LYoxfzwzAXe4MX6eDXfHrj/G+9rWpU9ZiJj5BkNSr2g4odGYiPqKxaCqZwMjx/D\ngPLZC7FawwKBgQDg4v4iAWYrUgdys2LvKhn/oPfoj9WUH4Ma0wW3zGzIal/N7fr4\n4GbGlxUkVm+ZSnW/LrknWKrZAYpthVMsiv9UZ7n81OPmPSeUxej/ZwHy4xScCAH7\nFA+YQetkMPzszmK2kw0O+TnQeqtVQIvIn2Cjue6b4qxhKi5cmfvJjHUHAwKBgQDN\n8WGBwoU5J6Bd9HyHzrVUh3izNCo3DjW+7J7D5prRKCQMBn6uhXqY9cqpcMLJSbEI\nKXaKlM/KarS9wdlFg6HuIaAiispz/SrZV99oAPfkdmvhguS6nz4nrE3HWn6cCzVl\nZhUT8BpCuBNiAV0a7kpzvPd/AzGY1/teO8m8WouQSQKBgEAwSn1hIuuxlpYAXvrf\npcU0wGX06Hl43ywGKgx98aikpJtdwRyt/Yn+oKuNkBzPg57EtLy+M16GNWiGMlOb\nD+Lk9vu0CqvCbpLF6YXTZ2YVr+3ZHt0xOzuohCQvnqmI3upKPeTVKaSoC/wSlaAu\njDPOsxYex2WbqMkdsyPbkxw4\n-----END PRIVATE KEY-----\n",
+  "client_email": "streamwatch-sa@streamwatch-481219.iam.gserviceaccount.com",
+  "client_id": "111469450063644631422",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/streamwatch-sa%40streamwatch-481219.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

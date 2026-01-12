@@ -1,0 +1,15 @@
+pandas
+numpy
+scikit-learn
+lightgbm
+xgboost
+matplotlib
+plotly
+streamlit
+python-dotenv
+requests
+pytrends
+joblib
+pyarrow
+google-cloud-storage>=2.10.0
+google-auth
