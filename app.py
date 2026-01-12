@@ -1579,7 +1579,7 @@ It’s designed to demonstrate **data engineering fundamentals**: reliable inges
 """
     )
 
-    st.markdown("### What this app demonstrates (recruiter-friendly)")
+    st.markdown("### What this app demonstrates")
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown(
