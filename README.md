@@ -134,6 +134,34 @@ Features (examples):
 
 ---
 
+## Model evaluation and metrics
+
+Metrics are logged per run and per forecast horizon (t+1…t+4):
+- RMSE
+- R²
+- training and validation row counts
+
+### Latest run (example)
+
+| family | horizon | rmse_train | rmse_val | r2_train | r2_val | n_train | n_val | cutoff_week | run_id | run_date | week_start | created_utc | n_rows | n_cols | n_features | n_unique_weeks | n_unique_shows |
+|--------|---------|------------|----------|----------|--------|---------|-------|-------------|--------|----------|------------|--------------|--------|--------|------------|----------------|----------------|
+| lgbm | 1 | 8.387431735 | 16.647371576 | 0.7690226644 | 0.5323371384 | 30514 | 7592 | 2025-01-05 | manual_test_20251230 | 12/30/25 | 12/29/25 | 2026-01-08T03:14:22Z | 38252 | 274 | 259 | 262 | 146 |
+| lgbm | 2 | 8.738684830 | 17.730467136 | 0.7494568847 | 0.4727693757 | 30514 | 7446 | 2025-01-05 | manual_test_20251230 | 12/30/25 | 12/29/25 | 2026-01-08T03:14:22Z | 38252 | 274 | 259 | 262 | 146 |
+| lgbm | 3 | 8.842484096 | 18.413698990 | 0.7432307887 | 0.4346804168 | 30514 | 7300 | 2025-01-05 | manual_test_20251230 | 12/30/25 | 12/29/25 | 2026-01-08T03:14:22Z | 38252 | 274 | 259 | 262 | 146 |
+| lgbm | 4 | 8.957980252 | 19.209889596 | 0.7365111395 | 0.3889348361 | 30514 | 7154 | 2025-01-05 | manual_test_20251230 | 12/30/25 | 12/29/25 | 2026-01-08T03:14:22Z | 38252 | 274 | 259 | 262 | 146 |
+
+
+
+### Metrics visualization
+
+<p align="center">
+  <img width="1281" height="407" alt="Screenshot 2026-01-13 at 1 53 01 PM" src="https://github.com/user-attachments/assets/4222b917-83a3-4689-ba7b-7ac1d87a9b70">
+</p>
+
+
+---
+
+
 ## Artifact layout + serving contract
 
 Artifacts are published to Google Cloud Storage, organized like:
@@ -173,7 +201,7 @@ Example:
       "hgbr_remote_dir": "models/hgbr",
       "lgbm_remote_dir": "models/lgbm"
     }
-  
+  }
 
 ---
 
@@ -188,6 +216,59 @@ The app does not retrain models or write data.
 <div align="center"> 
 <img width="862" height="666" alt="Screenshot 2026-01-13 at 12 49 00 PM" src="https://github.com/user-attachments/assets/018d4c22-d923-48b9-bba8-a3d059fc13bd" />
 </div>
+
+---
+## Getting started
+
+### Prerequisites
+- Python 3.10+
+- Docker + Docker Compose (for local Airflow only)
+- TMDB API key
+- Google Cloud Storage bucket + credentials (for training and artifact upload)
+
+### Run the Streamlit app locally (serving only)
+
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+streamlit run app.py
+```
+
+Open:
+- http://localhost:8501
+
+### Environment variables
+
+Set these via a `.env` file, shell exports, or Streamlit secrets:
+
+```bash
+TMDB_API_KEY=your_tmdb_key
+GCS_BUCKET=your_bucket_name
+GCP_PROJECT=your_project_id
+GOOGLE_APPLICATION_CREDENTIALS=/path/to/service_account.json
+```
+
+### Run the pipeline locally (Airflow, dev/debug)
+
+```bash
+docker compose up airflow-init
+docker compose up
+```
+
+Airflow UI:
+- http://localhost:8080
+
+Trigger the DAG:
+- `streamwatch_weekly`
+
+### Run the pipeline online (GitHub Actions)
+
+The production pipeline runs on a weekly schedule using GitHub Actions:
+- Workflow: `.github/workflows/main.yml`
+- Publishes versioned artifacts to GCS
+- Updates the serving manifest atomically
 
 ---
 
